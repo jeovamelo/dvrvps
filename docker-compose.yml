@@ -1,0 +1,31 @@
+﻿services:
+  dvr-app:
+    build: .
+    container_name: dvr-app
+    restart: unless-stopped
+    environment:
+      - PORT=8080
+      - DVR_HOST=${DVR_HOST:-206.42.26.134}
+      - DVR_PORT=${DVR_PORT:-3391}
+    ports:
+      - "127.0.0.1:8090:8080"
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: dvr-caddy-ssl
+    restart: unless-stopped
+    profiles:
+      - caddy-standalone
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - dvr-app
+
+volumes:
+  caddy_data:
+  caddy_config:

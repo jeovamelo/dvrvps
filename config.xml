@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" 
+        xmlns:tizen="http://tizen.org/ns/widgets" 
+        id="http://yourdomain/Dvrtv" 
+        version="1.0.0" 
+        viewmodes="maximized">
+    <tizen:application id="dvr01casa0.Dvrtv" 
+                       package="dvr01casa0" 
+                       required_version="3.0"/>
+    <content src="index.html"/>
+    <feature name="http://tizen.org/feature/screen.size.all"/>
+    <icon src="icon.png"/>
+    <name>DVR TV - Câmeras</name>
+    <description>Aplicativo para Samsung Smart TV para visualização e controle das câmeras do DVR Hikvision em tempo real.</description>
+    
+    <tizen:profile name="tv-samsung"/>
+    
+    <!-- Privilégios Tizen para Samsung Smart TV -->
+    <tizen:privilege name="http://tizen.org/privilege/internet"/>
+    <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
+    <tizen:privilege name="http://developer.samsung.com/privilege/avplay"/>
+    <tizen:privilege name="http://developer.samsung.com/privilege/network.public"/>
+    
+    <!-- Acesso irrestrito a qualquer IP local -->
+    <access origin="*" subdomains="true"/>
+    
+    <tizen:allow-navigation href="*"/>
+    
+    <tizen:content-security-policy>
+        default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;
+        connect-src * 'self';
+        img-src * 'self' data: blob:;
+        media-src * 'self' data: blob:;
+    </tizen:content-security-policy>
+    
+    <tizen:setting screen-orientation="landscape" 
+                   context-menu="enable" 
+                   background-support="disable" 
+                   encryption="disable" 
+                   install-location="auto"/>
+</widget>

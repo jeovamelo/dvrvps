@@ -1,0 +1,13 @@
+﻿.git
+.gitignore
+.tizen-rds
+Debug
+certificado
+*.wgt
+*.bat
+*.ps1
+*.rsc
+.env
+README.md
+COMO_INSTALAR_SAMSUNG_TV.md
+tizen_web_project.yaml

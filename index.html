@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+<html lang=pt-BR>
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content=width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover>
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black-translucent>
+    <meta name=apple-mobile-web-app-title content=DVR Monitor>
+    <meta name=theme-color content=#0f172a>
+    <link rel=apple-touch-icon href=icon.png>
+    <link rel=manifest href=manifest.json>
+    <title>Monitor CFTV • DVR Hikvision</title>
+    <link rel=stylesheet href=css/style.css?v=2.3?v=2.3>
+</head>
+<body>
+    <!-- Tela de Login Obrigatória (Compatível com Google Chrome Password Manager e iOS Safari) -->
+    <div id=login-screen class=login-screen>
+        <div class=login-card>
+            <div class=login-header>
+                <div class=login-badge>
+                    <span class=login-badge-dot></span>
+                    <span>SISTEMA DE SEGURANÇA</span>
+                </div>
+                <h2>Acesso Monitor CFTV</h2>
+                <p>DVR Hikvision • dvr.ilocseguro.com</p>
+            </div>
+
+            <form id=site-login-form method=POST onsubmit=return false; autocomplete=on>
+                <div class=form-group>
+                    <label for=site-username>Usuário / E-mail</label>
+                    <input 
+                        type=email 
+                        id=site-username 
+                        name=username 
+                        class=form-input 
+                        placeholder=seu-email@dominio.com 
+                        autocomplete=username 
+                        required 
+                        autofocus
+                    >
+                </div>
+
+                <div class=form-group>
+                    <label for=site-password>Senha de Acesso</label>
+                    <div class=password-wrapper style=position: relative;>
+                        <input 
+                            type=password 
+                            id=site-password 
+                            name=password 
+                            class=form-input 
+                            placeholder=Digite sua senha 
+                            autocomplete=current-password 
+                            required
+                        >
+                        <span id=btn-toggle-site-pwd class=password-toggle-btn title=Mostrar/Ocultar Senha>👁️</span>
+                    </div>
+                </div>
+
+                <div id=login-error-msg class=login-error-msg style=display: none;></div>
+
+                <button type=submit id=btn-site-login class=btn-login-submit>
+                    <span>Entrar no Sistema</span>
+                    <span class=login-arrow>➔</span>
+                </button>
+            </form>
+
+            <div class=login-footer>
+                <span>🔒 Conexão Criptografada SSL • ilocseguro.com</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho Superior Moderno -->
+    <header class=app-header>
+        <div class=header-left>
+            <div class=app-logo>📹</div>
+            <h1 id=dvr-title class=dvr-title>DVR01Casa • iDS-7216HQHI-M1/XT</h1>
+            <div class=connection-status>
+                <span id=status-dot class=status-dot connecting></span>
+                <span id=status-label>Conectando...</span>
+                <span id=bandwidth-meter class=bandwidth-meter style=display: none;>• 0.0 KB/s</span>
+            </div>
+        </div>
+        <div class=header-right>
+            <button type=button id=btn-quick-layout class=btn-quick-layout title=Alternar Modo da Grade>
+                <span class=icon-grid>🔲</span>
+                <span id=layout-label-text>Grade 4x4</span>
+            </button>
+            <button type=button id=btn-settings class=btn-settings title=Preferências de Exibição>
+                <span class=icon-gear>⚙️</span>
+                <span>Preferências</span>
+            </button>
+            <button type=button id=btn-logout class=btn-logout title=Sair do Sistema>
+                <span>🚪</span>
+                <span>Sair</span>
+            </button>
+            <div class=clock-widget>
+                <div id=clock-time class=clock-time>--:--:--</div>
+                <div id=clock-date class=clock-date>--</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Área Principal de Exibição (Grade de Câmeras Otimizada para Celular e Web) -->
+    <main class=main-container>
+        <div id=camera-grid class=camera-grid layout-4x4>
+            <!-- Os cards de câmeras são gerados dinamicamente via app.js -->
+        </div>
+    </main>
+
+    <!-- Visualização Individualizada (Player de Vídeo) -->
+    <div id=fullscreen-view class=fullscreen-view style=display: none;>
+        <div class=fullscreen-video-wrapper>
+            <div id=fullscreen-player-container class=fullscreen-player-container>
+                <div id=player-loader class=player-loader>
+                    <div class=spinner></div>
+                    <span>Carregando transmissão...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Barra Inferior Discreta e Otimizada para Touch e Web -->
+        <div class=fullscreen-bottom-bar>
+            <div class=fs-bottom-left>
+                <div class=fs-cam-info>
+                    <h2 id=fs-cam-title class=fs-cam-title>Camera 01 (CH 1)</h2>
+                    <div id=fs-cam-badge class=fs-quality-tag quality-fluido title=Toque para alternar Fluido / HD>
+                        <span class=fs-quality-dot></span>
+                        <span id=fs-quality-text>Fluido</span>
+                        <span id=fs-bandwidth-text class=fs-bandwidth-text></span>
+                    </div>
+                </div>
+            </div>
+            <div class=fs-bottom-right>
+                <button type=button id=btn-fs-prev class=fs-btn-touch title=Câmera Anterior>◀ Anterior</button>
+                <button type=button id=btn-fs-toggle-quality class=fs-btn-touch fs-btn-quality title=Alternar Resolução>⚡ Fluido / HD</button>
+                <button type=button id=btn-fs-next class=fs-btn-touch title=Próxima Câmera>Próxima ▶</button>
+                <button type=button id=btn-fs-back class=fs-btn-touch fs-btn-close title=Voltar para a Grade>✕ Grade</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Preferências de Exibição (Moderno / Web / Mobile) -->
+    <div id="settings-modal" class="settings-modal" style="display: none;">>
+        <div class=settings-backdrop id=settings-backdrop></div>
+        <div class=settings-card>
+            <div class=settings-header>
+                <div class=settings-title-wrap>
+                    <span class=settings-icon>⚙️</span>
+                    <h2>Preferências de Exibição</h2>
+                </div>
+                <button type=button id=btn-close-modal class=btn-close-modal title=Fechar>✕</button>
+            </div>
+
+            <div class=settings-body>
+                <!-- Modo da Grade -->
+                <div class=pref-section>
+                    <label class=pref-label>Modo da Grade de Câmeras</label>
+                    <div class=pref-btn-group id=pref-grid-layouts>
+                        <button type=button class=pref-choice-btn data-val=1x1>1x1 (1 Câmera)</button>
+                        <button type=button class=pref-choice-btn data-val=2x2>2x2 (4 Câmeras)</button>
+                        <button type=button class=pref-choice-btn data-val=3x3>3x3 (9 Câmeras)</button>
+                        <button type=button class=pref-choice-btn active data-val=4x4>4x4 (16 Câmeras)</button>
+                    </div>
+                </div>
+
+                <!-- Filtro de Câmeras Sem Sinal -->
+                <div class=pref-section>
+                    <label class=pref-label>Filtro de Câmeras</label>
+                    <label class=pref-checkbox-label>
+                        <input type=checkbox id=pref-hide-inactive>
+                        <span>Ocultar câmeras sem sinal (CH 7, 8, 10)</span>
+                    </label>
+                    <span class=pref-hint>Exibe somente as 13 câmeras ativas com imagem limpa e sem espaços vazios.</span>
+                </div>
+
+                <!-- Ordem das Câmeras (Arrastar e Soltar) -->
+                <div class=pref-section>
+                    <label class=pref-label>Ordem das Câmeras</label>
+                    <button type=button id=btn-reset-order class=pref-choice-btn style=width: 100%; text-align: center; padding: 10px 14px;>
+                        🔄 Restaurar Ordem Padrão (CH 1 ao 16)
+                    </button>
+                    <span class=pref-hint style=margin-left: 0; margin-top: 8px;>Dica: você pode clicar e arrastar qualquer quadro na grade com o mouse para organizar as câmeras como preferir.</span>
+                </div>
+
+                <!-- Qualidade Padrão Inicial -->
+                <div class=pref-section>
+                    <label class=pref-label>Qualidade de Transmissão Padrão</label>
+                    <div class=pref-btn-group id=pref-quality-choices>
+                        <button type=button class=pref-choice-btn active data-val=fluido>⚡ Fluido (Mais Rápido / 4G / Menor Consumo)</button>
+                        <button type=button class=pref-choice-btn data-val=hd>💎 Alta Resolução (HD 1080P)</button>
+                    </div>
+                </div>
+
+                <!-- Taxa de Atualização da Grade -->
+                <div class=pref-section>
+                    <label class=pref-label>Taxa de Atualização da Grade</label>
+                    <div class=pref-btn-group id=pref-interval-choices>
+                        <button type=button class=pref-choice-btn data-val=1000>1 segundo (Tempo Real)</button>
+                        <button type=button class=pref-choice-btn active data-val=2000>2 segundos (Equilibrado)</button>
+                        <button type=button class=pref-choice-btn data-val=3000>3 segundos (Econômico)</button>
+                    </div>
+                </div>
+
+                <!-- Informações do Sistema -->
+                <div class=pref-info-box>
+                    <div class=pref-info-row>
+                        <span class=pref-info-key>Servidor VPS:</span>
+                        <span class=pref-info-val>Online (dvr.ilocseguro.com / SSL)</span>
+                    </div>
+                    <div class=pref-info-row>
+                        <span class=pref-info-key>Gravador DVR:</span>
+                        <span class=pref-info-val>Hikvision iDS-7216HQHI-M1/XT</span>
+                    </div>
+                    <div class=pref-info-row>
+                        <span class=pref-info-key>Firmware:</span>
+                        <span class=pref-info-val>V4.83.301 build 240407</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class=settings-footer>
+                <button type=button id=btn-save-preferences class=modal-btn btn-primary>
+                    <span>💾 Salvar Preferências</span>
+                </button>
+                <button type=button id=btn-cancel-settings class=modal-btn btn-cancel>
+                    <span>✕ Cancelar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id=toast-notification class=toast-notification></div>
+
+    <!-- Scripts da Aplicação (Sem controle remoto de TV - 100% Web e Touch) -->
+    <script src=js/sha256.js></script>
+    <script src=js/dvr-api.js?v=2.3?v=2.3></script>
+    <script src=js/avplayer.js?v=2.3?v=2.3></script>
+    <script src=js/app.js?v=2.3?v=2.3></script>
+</body>
+</html>
+
+
+
